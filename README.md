@@ -20,7 +20,7 @@
 1. Install [VS Code](https://code.visualstudio.com/) and the **Live Server** extension.
 2. Open this folder in VS Code.
 3. Right-click `books.html` and choose **Open with Live Server**.
-4. Open `jquery-dom.html` the same way. It also needs internet access to load jQuery from the CDN.
+4. Open `jquery-dom.html` the same way. It needs internet access to load jQuery from the CDN.
 
 Alternative using Python:
 
@@ -29,46 +29,47 @@ python -m http.server 8000
 # then visit http://localhost:8000/books.html
 ```
 
-### Expected output
+## Question 1 - books.json
 
-**books.html**
-- Title of first book: The Great Gatsby
-- Author of second book: Harper Lee
-- The Great Gatsby: Fiction, Classics
-- To Kill a Mockingbird: Fiction, Coming-of-Age
+`books.json` has one top-level object with a `books` array. Each book has `title` and `author` (strings), `publicationYear` (number) and `genres` (array of strings). Keys use double quotes and there are no trailing commas, so the file is valid JSON.
 
-If `books.json` is missing or invalid, the page shows a friendly error message instead.
+![Q1 books.json](screenshots/q1-book-json.png)
 
-**jquery-dom.html**
-- The text of `#myElement` changes to "Modified Text".
-- `#myDIV` gets the `myStyle` class (coral background).
-- Clicking **Click me** shows an alert saying "Button clicked!".
+## Question 2 - books.html
+
+`fetch("books.json")` returns a response, which is checked with `response.ok` and parsed with `response.json()`. The page shows the title of the first book, the author of the second book and the genres of each book, using `textContent` and `createElement()`. A `try/catch` block handles a failed request or invalid JSON.
+
+**Code**
+
+![Q2 books.html code](screenshots/q2-books-html.png)
+
+**Output (served through Live Server)**
+
+![Q2 output](screenshots/q2-output.png)
+
+**Error handling** - the message shown when `books.json` cannot be loaded:
+
+![Q2 error message](screenshots/q2-error.png)
+
+## Question 3 - jquery-dom.html
+
+Three native JavaScript operations were converted to jQuery. The code runs inside `$(function () { ... })` so the DOM is ready first.
+
+| Operation | Native JavaScript | jQuery |
+| --- | --- | --- |
+| (a) Change text | `textContent = "Modified Text"` | `.text("Modified Text")` |
+| (b) Add a class | `classList.add("myStyle")` | `.addClass("myStyle")` |
+| (c) Click event | `addEventListener("click", ...)` | `.on("click", ...)` |
 
 jQuery 4.0.0 (full build) is loaded from `https://code.jquery.com/jquery-4.0.0.min.js`.
 
-## Screenshots
+The script runs when the page is ready, so the text and style change on load. The alert appears only after the button is clicked.
 
-### Q1 - books.json
-
-![Q1 books.json](screenshots/q1-json.png)
-
-### Q2 - books.html
-
-![Q2 books.html](screenshots/q2-books.png)
-
-### Q3 - jquery-dom.html
-
-| Before | After |
+| After page load (text changed, `myStyle` applied) | After clicking the button (alert shown) |
 | --- | --- |
-| ![Q3 before](screenshots/q3-before.png) | ![Q3 after](screenshots/q3-after.png) |
-
-## Brief explanation
-
-- **Q1:** `books.json` uses double-quoted keys and no trailing commas. Each book has `title` and `author` (strings), `publicationYear` (number) and `genres` (array of strings).
-- **Q2:** `fetch("books.json")` returns a response, which is checked with `response.ok` and parsed with `response.json()`. The values are placed in the page with `textContent` and `createElement()`. A `try/catch` handles failed requests and invalid JSON.
-- **Q3:** each native operation has a jQuery equivalent: `.text()` replaces `textContent`, `.addClass()` replaces `classList.add()`, and `.on("click", ...)` replaces `addEventListener()`. The code runs inside `$(function () { ... })` so the DOM is ready first.
+| ![Q3 after load](screenshots/q3-jquery-dom-before.png) | ![Q3 after click](screenshots/q3-jquery-dom-after.png) |
 
 ## Native JavaScript vs jQuery
 
-- **Advantage of native JavaScript:** it needs no extra library download and works directly with modern browser APIs.
-- **Why a project may still use jQuery:** an older codebase may already depend on jQuery code or plugins, and rewriting it would cost time and risk new bugs.
+- **Advantage of native JavaScript:** it needs no extra library download, so pages load faster, and it uses modern browser features directly.
+- **Why a project may still use jQuery:** an older project may already depend on jQuery code and plugins, and rewriting it would take time and could introduce new bugs.
