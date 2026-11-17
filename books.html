@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab 4b Q2 - Books from JSON</title>
+</head>
+<body>
+  <h1>Books</h1>
+  <p id="error" role="alert"></p>
+  <p><strong>Title of first book:</strong> <span id="firstTitle"></span></p>
+  <p><strong>Author of second book:</strong> <span id="secondAuthor"></span></p>
+  <h2>Genres</h2>
+  <ul id="genreList"></ul>
+
+  <script>
+    async function loadBooks() {
+      const errorEl = document.getElementById("error");
+      try {
+        const response = await fetch("books.json");
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+        const data = await response.json();   // throws if JSON is invalid
+        const books = data.books;
+
+        document.getElementById("firstTitle").textContent = books[0].title;
+        document.getElementById("secondAuthor").textContent = books[1].author;
+
+        const list = document.getElementById("genreList");
+        books.forEach(function (book) {
+          const li = document.createElement("li");
+          li.textContent = book.title + " \u2014 " + book.genres.join(", ");
+          list.appendChild(li);
+        });
+      } catch (err) {
+        errorEl.textContent =
+          "Sorry, the book data could not be loaded. Please check that books.json exists, is valid, and that you are using a local server.";
+        console.error(err);
+      }
+    }
+
+    loadBooks();
+  </script>
+</body>
+</html>
